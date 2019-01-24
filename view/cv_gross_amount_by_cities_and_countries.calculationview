@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="cv_gross_amount_by_cities_and_countries" applyPrivilegeType="ANALYTIC_PRIVILEGE" dataCategory="CUBE" schemaVersion="2.3" defaultClient="$$client$$" visibility="reportingEnabled" outputViewType="Aggregation" calculationScenarioType="TREE_BASED" enforceSqlExecution="false">
+<descriptions defaultDescription="Gross amount by cities and countries"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="SNWD_SO" type="DATA_BASE_TABLE">
+    <viewAttributes allViewAttributes="true"/>
+    <columnObject schemaName="ABAP" columnObjectName="SNWD_SO"/>
+  </DataSource>
+  <DataSource id="SNWD_BPA" type="DATA_BASE_TABLE">
+    <viewAttributes allViewAttributes="true"/>
+    <columnObject schemaName="ABAP" columnObjectName="SNWD_BPA"/>
+  </DataSource>
+  <DataSource id="SNWD_AD" type="DATA_BASE_TABLE">
+    <viewAttributes allViewAttributes="true"/>
+    <columnObject schemaName="ABAP" columnObjectName="SNWD_AD"/>
+  </DataSource>
+</dataSources>
+<calculationViews>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Sales_Orders">
+    <viewAttributes>
+      <viewAttribute id="BUYER_GUID"/>
+      <viewAttribute id="SO_GUID"/>
+      <viewAttribute id="GROSS_AMOUNT"/>
+      <viewAttribute id="CLIENT"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="#SNWD_SO">
+      <mapping xsi:type="Calculation:AttributeMapping" target="BUYER_GUID" source="BUYER_GUID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SO_GUID" source="NODE_KEY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GROSS_AMOUNT" source="GROSS_AMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CLIENT" source="CLIENT"/>
+    </input>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="BP_AD" joinType="inner" cardinality="C1_1">
+    <viewAttributes>
+      <viewAttribute id="BP_GUID"/>
+      <viewAttribute id="CLIENT"/>
+      <viewAttribute id="CITY"/>
+      <viewAttribute id="COUNTRY"/>
+      <viewAttribute id="JOIN$ADDRESS_GUID$AD_GUID" hidden="true"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="#Bupa">
+      <mapping xsi:type="Calculation:AttributeMapping" target="BP_GUID" source="BP_GUID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CLIENT" source="CLIENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$ADDRESS_GUID$AD_GUID" source="ADDRESS_GUID"/>
+    </input>
+    <input node="#Address">
+      <mapping xsi:type="Calculation:AttributeMapping" target="CITY" source="CITY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COUNTRY" source="COUNTRY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$ADDRESS_GUID$AD_GUID" source="AD_GUID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CLIENT" source="CLIENT"/>
+    </input>
+    <joinAttribute name="JOIN$ADDRESS_GUID$AD_GUID"/>
+    <joinAttribute name="CLIENT"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Bupa">
+    <viewAttributes>
+      <viewAttribute id="BP_GUID"/>
+      <viewAttribute id="CLIENT"/>
+    
+      <viewAttribute id="ADDRESS_GUID"/></viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="#SNWD_BPA">
+      <mapping xsi:type="Calculation:AttributeMapping" target="BP_GUID" source="NODE_KEY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ADDRESS_GUID" source="ADDRESS_GUID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CLIENT" source="CLIENT"/>
+    </input>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Address">
+    <viewAttributes>
+      <viewAttribute id="CITY"/>
+      <viewAttribute id="COUNTRY"/>
+    
+      <viewAttribute id="AD_GUID"/>
+      <viewAttribute id="CLIENT"/></viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="#SNWD_AD">
+      <mapping xsi:type="Calculation:AttributeMapping" target="AD_GUID" source="NODE_KEY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CITY" source="CITY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CLIENT" source="CLIENT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COUNTRY" source="COUNTRY"/>
+    </input>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="SO_AD" joinType="inner" cardinality="C1_1">
+    <viewAttributes>
+      <viewAttribute id="CITY"/>
+      <viewAttribute id="COUNTRY"/>
+      <viewAttribute id="GROSS_AMOUNT"/>
+      <viewAttribute id="JOIN$BP_GUID$BUYER_GUID" hidden="true"/>
+      <viewAttribute id="JOIN$CLIENT$CLIENT" hidden="true"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="#BP_AD">
+      <mapping xsi:type="Calculation:AttributeMapping" target="CITY" source="CITY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="COUNTRY" source="COUNTRY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$BP_GUID$BUYER_GUID" source="BP_GUID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$CLIENT$CLIENT" source="CLIENT"/>
+    </input>
+    <input node="#Sales_Orders">
+      <mapping xsi:type="Calculation:AttributeMapping" target="GROSS_AMOUNT" source="GROSS_AMOUNT"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$BP_GUID$BUYER_GUID" source="BUYER_GUID"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$CLIENT$CLIENT" source="CLIENT"/>
+    </input>
+    <joinAttribute name="JOIN$BP_GUID$BUYER_GUID"/>
+    <joinAttribute name="JOIN$CLIENT$CLIENT"/>
+  </calculationView>
+</calculationViews>
+<logicalModel id="SO_AD">
+  <attributes>
+    <attribute id="CITY" order="1" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="CITY"/>
+      <keyMapping columnObjectName="SO_AD" columnName="CITY"/>
+    </attribute>
+    <attribute id="COUNTRY" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="COUNTRY"/>
+      <keyMapping columnObjectName="SO_AD" columnName="COUNTRY"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures>
+    <measure id="GROSS_AMOUNT" order="3" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="GROSS_AMOUNT"/>
+      <measureMapping columnObjectName="SO_AD" columnName="GROSS_AMOUNT"/>
+    </measure>
+  </baseMeasures>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+  <localDimensions/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="40" y="85"/>
+    </shape>
+  
+    <shape expanded="true" modelObjectName="Sales_Orders" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="-4" y="236"/>
+      <rectangleSize height="30" width="140"/>
+    </shape>
+    <shape expanded="true" modelObjectName="BP_AD" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="86" y="207"/>
+      <rectangleSize height="30" width="140"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Bupa" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="-22" y="374"/>
+      <rectangleSize height="30" width="140"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Address" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="282" y="378"/>
+      <rectangleSize height="30" width="140"/>
+    </shape>
+    <shape expanded="true" modelObjectName="SO_AD" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="270" y="162"/>
+      <rectangleSize height="30" width="140"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>

@@ -1,0 +1,22 @@
+PROCEDURE "OVLY_DEV_3"."tsystems.aluno03.sqlscript::getPartners" 
+    ( 
+        IN pais NVARCHAR(3),
+        OUT resultado "OVLY_DEV_3"."tsystems.aluno03.sqlscript::types.tt_parceiros" 
+    )
+   LANGUAGE SQLSCRIPT
+   SQL SECURITY INVOKER
+   DEFAULT SCHEMA "SAPHANADB"
+   READS SQL DATA AS
+BEGIN
+
+resultado = select 
+    "COMPANY_NAME",
+    "CITY"
+    --"COUNTRY"
+    from "SNWD_BPA" as parceiro
+    inner join "SNWD_AD" as endereco
+    on parceiro.CLIENT = endereco.CLIENT
+    and parceiro.ADDRESS_GUID = endereco.NODE_KEY
+    where COUNTRY = pais;
+
+END

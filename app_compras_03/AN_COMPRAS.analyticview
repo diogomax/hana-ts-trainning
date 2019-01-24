@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Cube:cube xmlns:Cube="http://www.sap.com/ndb/BiModelCube.ecore" schemaVersion="1.5" id="AN_COMPRAS" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled">
+  <descriptions defaultDescription="Compras"/>
+  <localVariables/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <privateMeasureGroup id="MeasureGroup">
+    <attributes>
+      <attribute id="NODE_KEY" key="true" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="NODE_KEY"/>
+        <keyMapping schemaName="SAPHANADB" columnObjectName="SNWD_PO" columnName="NODE_KEY"/>
+      </attribute>
+      <attribute id="PO_ID" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="PO_ID"/>
+        <keyMapping schemaName="SAPHANADB" columnObjectName="SNWD_PO" columnName="PO_ID"/>
+      </attribute>
+      <attribute id="PARTNER_GUID" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="PARTNER_GUID"/>
+        <keyMapping schemaName="SAPHANADB" columnObjectName="SNWD_PO" columnName="PARTNER_GUID"/>
+      </attribute>
+      <attribute id="CURRENCY" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="CURRENCY"/>
+        <keyMapping schemaName="SAPHANADB" columnObjectName="SNWD_PO" columnName="CURRENCY_CODE"/>
+      </attribute>
+      <attribute id="CREATED_AT" order="6" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="CREATED_AT"/>
+        <keyMapping schemaName="SAPHANADB" columnObjectName="SNWD_PO" columnName="CREATED_AT"/>
+      </attribute>
+      <attribute id="PRODUCT_GUID" order="7" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="PRODUCT_GUID"/>
+        <keyMapping schemaName="SAPHANADB" columnObjectName="SNWD_PO_I" columnName="PRODUCT_GUID"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies>
+        <tableProxy centralTable="true">
+          <table schemaName="SAPHANADB" columnObjectName="SNWD_PO"/>
+        </tableProxy>
+        <tableProxy>
+          <table schemaName="SAPHANADB" columnObjectName="SNWD_PO_I"/>
+        </tableProxy>
+      </tableProxies>
+      <joins>
+        <join>
+          <leftTable schemaName="SAPHANADB" columnObjectName="SNWD_PO"/>
+          <rightTable schemaName="SAPHANADB" columnObjectName="SNWD_PO_I"/>
+          <leftColumns>
+            <columnName>NODE_KEY</columnName>
+          </leftColumns>
+          <rightColumns>
+            <columnName>PARENT_KEY</columnName>
+          </rightColumns>
+          <properties joinOperator="Equal" joinType="referential"/>
+        </join>
+      </joins>
+      <layout>
+        <shapes>
+          <shape modelObjectName="SNWD_PO" modelObjectNameSpace="SAPHANADB" modelObjectType="catalog">
+            <upperLeftCorner x="70" y="30"/>
+          </shape>
+          <shape modelObjectName="SNWD_PO_I" modelObjectNameSpace="SAPHANADB" modelObjectType="catalog">
+            <upperLeftCorner x="314" y="30"/>
+          </shape>
+        </shapes>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="GROSS_AMOUNT" order="4" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="GROSS_AMOUNT"/>
+        <measureMapping schemaName="SAPHANADB" columnObjectName="SNWD_PO" columnName="GROSS_AMOUNT"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures>
+      <measure id="GROSS_AMOUNT_USD" hidden="false" order="8" semanticType="amount" aggregationType="sum" measureType="amount" calculateBeforeAggregation="false" datatype="DECIMAL" expressionLanguage="COLUMN_ENGINE" length="34" scale="2">
+        <descriptions defaultDescription="Gross Amount in USD"/>
+        <fixedCurrency>USD</fixedCurrency>
+        <currencyConversion errorHandling="keepUnconverted" generateOutputUnitCurrencyAttribute="false" outputUnitCurrencyAttributeName="">
+          <client>
+            <value>$$client$$</value>
+          </client>
+          <schema schemaName="SAP_ECC"/>
+          <sourceCurrency>
+            <attribute attributeName="CURRENCY"/>
+          </sourceCurrency>
+          <erpDecimalShift>true</erpDecimalShift>
+          <erpDecimalShiftBack>false</erpDecimalShiftBack>
+          <targetCurrency>
+            <value>USD</value>
+          </targetCurrency>
+          <referenceDate>
+            <attribute attributeName="CREATED_AT"/>
+          </referenceDate>
+          <exchangeRateType>M</exchangeRateType>
+        </currencyConversion>
+        <formula>&quot;GROSS_AMOUNT&quot;</formula>
+      </measure>
+    </calculatedMeasures>
+    <restrictedMeasures/>
+    <sharedDimensions>
+      <logicalJoin associatedObjectUri="/tsystems.aluno03.app_compras_03/attributeviews/AT_PRODUTOS">
+        <attributes>
+          <attributeRef>#PRODUCT_GUID</attributeRef>
+        </attributes>
+        <associatedAttributeNames>
+          <attributeName>PRODUCT_KEY</attributeName>
+        </associatedAttributeNames>
+        <properties joinOperator="Equal" joinType="referential"/>
+        <associatedAttributeFeatures>
+          <attributeReference attributeName="PRICE" hidden="true"/>
+          <attributeReference attributeName="CURRENCY_CODE" hidden="true"/>
+        </associatedAttributeFeatures>
+      </logicalJoin>
+    </sharedDimensions>
+    <layout>
+      <shapes>
+        <shape modelObjectName="MEASURE_GROUP" modelObjectType="repository">
+          <upperLeftCorner x="11" y="56"/>
+        </shape>
+        <shape modelObjectName="/tsystems.aluno03.app_compras_03/attributeviews/AT_PRODUTOS" modelObjectType="repository">
+          <upperLeftCorner x="326" y="87"/>
+        </shape>
+        <shape modelObjectName="LogicalView" modelObjectNameSpace="MeasureGroup" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateMeasureGroup>
+</Cube:cube>

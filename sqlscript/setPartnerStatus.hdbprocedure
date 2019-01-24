@@ -1,0 +1,9 @@
+PROCEDURE "OVLY_DEV_3"."tsystems.aluno03.sqlscript::setPartnerStatus"     
+   ( IN client NVARCHAR(3), bp_id NVARCHAR(10), approval_status NVARCHAR(1) )
+   LANGUAGE SQLSCRIPT
+   SQL SECURITY DEFINER
+   DEFAULT SCHEMA "SAPHANADB"
+   AS
+BEGIN
+UPDATE SNWD_BPA SET APPROVAL_STATUS = :approval_status WHERE client = :client and bp_id = :bp_id;
+END

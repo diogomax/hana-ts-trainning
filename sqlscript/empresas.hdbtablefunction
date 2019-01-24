@@ -1,0 +1,24 @@
+FUNCTION "OVLY_DEV_3"."tsystems.aluno03.sqlscript::empresas" 
+    ( IN nome NVARCHAR(80) )
+    RETURNS table ( 
+        NOME_EMPRESA NVARCHAR(80), 
+        CIDADE NVARCHAR(40) 
+    )
+    
+   LANGUAGE SQLSCRIPT
+   SQL SECURITY INVOKER 
+   DEFAULT SCHEMA "SAPHANADB"
+   AS
+BEGIN
+
+return select 
+    "COMPANY_NAME" as NOME_EMPRESA,
+    "CITY" as CIDADE 
+    --"COUNTRY"
+    from "SNWD_BPA" as parceiro
+    inner join "SNWD_AD" as endereco
+    on parceiro.CLIENT = endereco.CLIENT
+    and parceiro.ADDRESS_GUID = endereco.NODE_KEY
+        where contains("COMPANY_NAME", :nome, FUZZY(0.5));
+
+END;

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_PRODUTOS" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <descriptions defaultDescription="Produtos"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="PRODUCT_KEY" key="true" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PRODUCT_KEY"/>
+      <keyMapping schemaName="SAPHANADB" columnObjectName="SNWD_PD" columnName="NODE_KEY"/>
+    </attribute>
+    <attribute id="PRODUCT_ID" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PRODUCT_ID"/>
+      <keyMapping schemaName="SAPHANADB" columnObjectName="SNWD_PD" columnName="PRODUCT_ID"/>
+    </attribute>
+    <attribute id="TYPE_CODE" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="TYPE_CODE"/>
+      <keyMapping schemaName="SAPHANADB" columnObjectName="SNWD_PD" columnName="TYPE_CODE"/>
+    </attribute>
+    <attribute id="CATEGORY" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CATEGORY"/>
+      <keyMapping schemaName="SAPHANADB" columnObjectName="SNWD_PD" columnName="CATEGORY"/>
+    </attribute>
+    <attribute id="PRICE" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PRICE"/>
+      <keyMapping schemaName="SAPHANADB" columnObjectName="SNWD_PD" columnName="PRICE"/>
+    </attribute>
+    <attribute id="CURRENCY_CODE" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CURRENCY_CODE"/>
+      <keyMapping schemaName="SAPHANADB" columnObjectName="SNWD_PD" columnName="CURRENCY_CODE"/>
+    </attribute>
+    <attribute id="SUPPLIER" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="SUPPLIER"/>
+      <searchProperties>
+        <freestyleSearch>true</freestyleSearch>
+        <fuzzinessThreshold>0.8</fuzzinessThreshold>
+      </searchProperties>
+      <keyMapping schemaName="SAPHANADB" columnObjectName="SNWD_BPA" columnName="COMPANY_NAME"/>
+    </attribute>
+    <attribute id="APPROVAL_STATUS" order="8" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="APPROVAL_STATUS"/>
+      <keyMapping schemaName="SAPHANADB" columnObjectName="SNWD_BPA" columnName="APPROVAL_STATUS"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="SAPHANADB" columnObjectName="SNWD_PD"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="SAPHANADB" columnObjectName="SNWD_BPA"/>
+      </tableProxy>
+    </tableProxies>
+    <joins>
+      <join>
+        <leftTable schemaName="SAPHANADB" columnObjectName="SNWD_PD"/>
+        <rightTable schemaName="SAPHANADB" columnObjectName="SNWD_BPA"/>
+        <leftColumns>
+          <columnName>SUPPLIER_GUID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>NODE_KEY</columnName>
+        </rightColumns>
+        <properties cardinality="C1_1" joinOperator="Equal" joinType="referential"/>
+      </join>
+    </joins>
+    <layout>
+      <shapes>
+        <shape modelObjectName="SNWD_PD" modelObjectNameSpace="SAPHANADB" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="SNWD_BPA" modelObjectNameSpace="SAPHANADB" modelObjectType="catalog">
+          <upperLeftCorner x="316" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

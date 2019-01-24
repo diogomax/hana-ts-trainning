@@ -1,0 +1,11 @@
+namespace tsystems.aluno03.sqlscript;
+
+@Schema: 'OVLY_DEV_3'
+context types {
+
+    type tt_parceiros {
+        COMPANY_NAME : String(80);
+        CITY : String(40);
+    };
+
+};
